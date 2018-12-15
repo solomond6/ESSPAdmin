@@ -1,0 +1,132 @@
+﻿
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Role Details
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Role Details
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (ViewBag.Message != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.Message
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (ViewBag.sMessage != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.sMessage
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-lg-6">
+                <!--begin::Portlet-->
+                <div class="m-portlet">
+                    <div class="m-portlet__head">
+                        <div class="m-portlet__head-caption">
+                            <div class="m-portlet__head-title">
+                                <span class="m-portlet__head-icon m--hide">
+                                    <i class="la la-gear"></i>
+                                </span>
+                                <h3 class="m-portlet__head-text">
+                                    Role Details
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <!--begin::Form-->
+
+                    <div class="m-portlet__body">
+                        <div class="m-form__section m-form__section--first">
+                            <div class="m-form__heading">
+                                    
+                            </div>
+                            <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name </th>
+                                            <th>Parent</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @item.ID
+                                            </td>
+                                                <td>
+                                                    @item.MenuName
+                                                </td>
+                                            <td>
+                                                @item.ParentMenuName
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("UnMapView", "AdminViews", new { viewId = @item.ID })" class="btn btn-danger">UnMap View</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Portlet-->
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+

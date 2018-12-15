@@ -1,0 +1,1312 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Requests
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Request List
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (TempData["error"] != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @TempData["error"]
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (TempData["msg"] != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-success alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @TempData["msg"]
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Request List
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <!--<ul class="m-portlet__nav">
+                        <li class="m-portlet__nav-item">
+                            <a href="@Url.Action("Create", "Employee")" class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
+                                <span>
+                                    <i class="la la-plus"></i>
+                                    <span>New Complaint</span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>-->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1">
+                        <span>
+                            <i class="la la-plus"></i>
+                            <span>New Request</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="m-portlet__body">
+                <ul class="nav nav-tabs  m-tabs-line" role="tablist">
+                    <li class="nav-item m-tabs__item">
+                        <a class="nav-link m-tabs__link active show" data-toggle="tab" href="#m_tabs_6_0" role="tab" aria-selected="true">
+                            Assigned Requests
+                        </a>
+                    </li>
+                    <li class="nav-item m-tabs__item">
+                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_tabs_6_1" role="tab" aria-selected="true">
+                            Initiated Requests
+                        </a>
+                    </li>
+                    <li class="nav-item m-tabs__item">
+                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_tabs_6_2" role="tab" aria-selected="false">
+                            UnAssigned Role Requests
+                        </a>
+                    </li>
+                    <li class="nav-item m-tabs__item">
+                        <a class="nav-link m-tabs__link" data-toggle="tab" href="#m_tabs_6_3" role="tab" aria-selected="false">
+                            All Role Requests
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active show" id="m_tabs_6_0" role="tabpanel">
+                        <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                            <table id="myassigned-data-table" class="datatable__table table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">RequestId</th>
+                                        <th scope="col">Creator</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Comment</th>
+                                        <th scope="col">Date Created</th>
+                                        <th scope="col">Status</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="m_tabs_6_1" role="tabpanel">
+                        <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                            <table id="my-data-table" class="datatable__table table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">RequestId</th>
+                                        <th scope="col">Creator</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Comment</th>
+                                        <th scope="col">Date Created</th>
+                                        <th scope="col">Status</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="m_tabs_6_2" role="tabpanel">
+                        <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                            <table id="un-data-table" class="datatable__table table table-striped" style="width:100% !important;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">RequestId</th>
+                                        <th scope="col">Creator</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Comment</th>
+                                        <th scope="col">Date Created</th>
+                                        <th scope="col">Status</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="m_tabs_6_3" role="tabpanel">
+                        <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                            <table id="employer-data-table" class="datatable__table table table-striped" style="width:100% !important;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">RequestId</th>
+                                        <th scope="col">Creator</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Comment</th>
+                                        <th scope="col">Date Created</th>
+                                        <th scope="col">Assigned To</th>
+                                        <th scope="col">Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
+                    <div class="row align-items-center">
+                        <div class="col-xl-12 order-2 order-xl-1">
+                            <div class="form-group m-form__group row align-items-center">
+                                <div class="col-md-3">
+                                    <div class="m-form__label">
+                                        <label>
+                                            Creator:
+                                        </label>
+                                    </div>
+                                    <div class="m-form__control">
+                                        <input type="text" class="form-control m-input m-input--solid" placeholder="Search..." id="generalSearch">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="m-form__label">
+                                        <label>
+                                            Status:
+                                        </label>
+                                    </div>
+                                    <div class="m-form__control">
+                                        <select name="status" class="form-control m-input m-input--solid" id="mStatus">
+                                            <option value="">Select A Status</option>
+                                            <option value="Initiated">Initiated</option>
+                                            <option value="Assigned">Assigned</option>
+                                            <option value="Cancelled">Cancelled</option>
+                                            <option value="Resolved">Resolved</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="m-form__label">
+                                        <label>
+                                            Start Date:
+                                        </label>
+                                    </div>
+                                    <div class="m-form__control">
+                                        <div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d" id="startdate">
+                                            <input type="text" class="form-control m-input m-input--solid" readonly="">
+                                            <span class="input-group-btn">
+                                                <button class="btn default" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="m-form__label">
+                                        <label>
+                                            End Date:
+                                        </label>
+                                    </div>
+                                    <div class="m-form__control">
+                                        <div class="input-group input-medium date date-picker" data-date-format="dd-mm-yyyy" data-date-start-date="+0d" id="enddate">
+                                            <input type="text" class="form-control m-input m-input--solid" readonly="">
+                                            <span class="input-group-btn">
+                                                <button class="btn default" type="button">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+                <!--begin: Datatable -->
+                
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLabel">New Request</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form name="request" action='@Url.Action("UpdateRequest", "Requests")' method="post" enctype="multipart/form-data" id="updateRequest">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input name="requestId" type="hidden" value="" id="requestId"/>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Status:</label>
+                        <select name="statusUpdate" id="statusUpdate" class="form-control" required>
+                            <option value="">-Select A Status-</option>
+                            <option value="Assigned">Assign</option>
+                            <option value="Cancelled">Cancel</option>
+                            <option value="Resolved">Resolve</option>
+                        </select>
+                    </div>
+                    <div class="optionDiv">
+                        <div class="m-form__group form-group">
+                            <label for="">
+                                Assign To:
+                            </label>
+                            <div class="m-radio-inline">
+                                <label class="m-radio">
+                                    <input type="radio" name="example_3" value="1" />
+                                    Internal Staff
+                                    <span></span>
+                                </label>
+                                <label class="m-radio">
+                                    <input type="radio" name="example_3" value="2" />
+                                    Employer
+                                    <span></span>
+                                </label>
+                                <label class="m-radio">
+                                    <input type="radio" name="example_3" value="3" />
+                                    Custodian
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group internalStaff">
+                            <label for="recipient-name" class="col-form-label">Internal User:</label>
+                            <select name="internalUser" id="internalStaff1" class="form-control internalStaff1">
+                                <option value="">-Select A User-</option>
+                            </select>
+                        </div>
+                        <div class="form-group employerStaff">
+                            <label for="recipient-name" class="col-form-label">Employer Contact person:</label>
+                            <select name="externalUser" id="employerStaff1" class="form-control employerStaff1">
+                                <option value="">-Select A Employer Contact-</option>
+                            </select>
+                        </div>
+                        <div class="form-group custodianStaff">
+                            <label for="recipient-name" class="col-form-label">Employer Custodian Contact:</label>
+                            <select name="custodianUser" id="custodianStaff1" class="form-control custodianStaff1">
+                                <option value="">-Select A Custodian Contact-</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea name="Comment" class="form-control" id="message-text" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Attachment:</label>
+                        <small>File size must be less than 4mb and file type accepted includes jpg, png, gif, doc, pdf, .xls, xlsx </small>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile" class="custom-file-input" id="iUpload" onchange="readURL(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile" class="form-control" id="base" />
+                            <input type="hidden" name="fileExt" class="form-control" id="ext" />
+                        </div>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile1" class="custom-file-input" id="iUpload1" onchange="readURL1(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile1" class="form-control" id="base1" />
+                            <input type="hidden" name="fileExt1" class="form-control" id="ext1" />
+                        </div>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile2" class="custom-file-input" id="iUpload2" onchange="readURL2(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile2" class="form-control" id="base2" />
+                            <input type="hidden" name="fileExt2" class="form-control" id="ext2" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLabel">New Request</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form name="request" action='@Url.Action("Create", "Requests")' method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Category:</label>
+                        <select name="requestCategory" id="requestCategory" class="form-control" required>
+                            <option value="">-Select A Complaint category-</option>
+                        </select>
+                    </div>
+                    <div class="m-form__help description"></div>
+                    <div class="m-form__help documentLinks"></div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea name="Comment" class="form-control" id="message-text" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Attachment:</label>
+                        <small>File size must be less than 4mb and file type accepted includes jpg, png, gif, doc, pdf, .xls, xlsx </small>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile" class="custom-file-input" id="iUpload01" onchange="readURL01(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile" class="form-control" id="base01" />
+                            <input type="hidden" name="fileExt" class="form-control" id="ext01" />
+                        </div>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile1" class="custom-file-input" id="iUpload02" onchange="readURL02(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile1" class="form-control" id="base02" />
+                            <input type="hidden" name="fileExt1" class="form-control" id="ext02" />
+                        </div>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile2" class="custom-file-input" id="iUpload03" onchange="readURL03(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile2" class="form-control" id="base03" />
+                            <input type="hidden" name="fileExt2" class="form-control" id="ext03" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="attachementModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLabel1"></h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="attachmentDocs" class="attachmentDocs" data-ride="carousel">
+                <ul class=""></ul>
+            </div>
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        //This condition will check if form with id 'contact-form' is exist then only form reset code will execute.
+        if($('#updateRequest').length>0){
+            $('#updateRequest')[0].reset();
+        }
+    });
+
+    $('[data-toggle="tooltip"]').tooltip();
+    $('#startdate').datepicker();
+    $('#enddate').datepicker();
+
+    $(".internalStaff").hide();
+    $(".employerStaff").hide();
+    $(".custodianStaff").hide();
+    $(".optionDiv").hide();
+
+    $(document).on('change', '#statusUpdate', function(){
+        var selectedStatus = $("#statusUpdate").val();
+        if(selectedStatus == "Assigned"){
+            $(".optionDiv").show();
+            $("#updateRequest input[type='radio']").attr('required', 'true');
+        }else{
+            $(".optionDiv").hide();
+        }
+    });
+
+    $(document).on('change', '#updateRequest input', function() {
+        var selectedAssignee = $("#updateRequest input[type='radio']:checked").val();
+        if(selectedAssignee == "1"){
+            $(".internalStaff").show();
+            $(".employerStaff").hide();
+            $(".custodianStaff").hide();
+            $(".internalStaff1").attr('required', 'true');
+            $(".employerStaff1").removeAttr('required', 'true');
+            $(".custodianStaff1").removeAttr('required', 'true');
+        }else if(selectedAssignee == "2"){
+            $(".internalStaff").hide();
+            $(".employerStaff").show();
+            $(".custodianStaff").hide();
+            $(".internalStaff1").removeAttr('required', 'true');
+            $(".employerStaff1").attr('required', 'true');
+            $(".custodianStaff1").removeAttr('required', 'true');
+        }else if(selectedAssignee == "3"){
+            $(".internalStaff").hide();
+            $(".employerStaff").hide();
+            $(".custodianStaff").show();
+            $(".internalStaff1").removeAttr('required', 'true');
+            $(".employerStaff1").removeAttr('required', 'true');
+            $(".custodianStaff1").attr('required', 'true');
+        }
+    });
+
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("GetRequestCategory", "Requests")",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $.each(data, function (index, item) {
+                requestData = item;
+                jQuery.grep(item, function(requestCategory, i) {
+                     $('#requestCategory').append($('<option>', {
+                        value: requestCategory.ID,
+                        text: requestCategory.Descr
+                    }));
+                });
+            });
+        }
+    });
+
+    $(document).on("change", "#requestCategory", function(){
+        $("#requestCategory").val();
+        var result = [];
+        for (var i = 0; i < requestData.length; i++)
+        {
+            console.log(requestData[i].ID);
+            if (requestData[i].ID == $("#requestCategory").val())
+            {
+                result.push(requestData[i]);
+                $('.description').html(requestData[i].Dynamictext);
+                documentLinks = requestData[i].Dynamicurl;
+                $('.documentLinks').html(documentLinks.replace("~", ", "));
+            }
+        }
+        //console.log(result);
+    });
+
+
+
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("GetExternalUsers", "Requests")",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $.each(data, function (index, item) {
+                $.grep(item, function (user, i){
+                        $('#employerStaff1').append($('<option>', {
+                            value: user.ID,
+                            text: user.FULLNAME +" ("+user.CompanyName +")",
+                        }));
+                });
+            });
+        }
+    });
+
+    function readURL(input) {
+        var iUpload = document.getElementById("iUpload");
+        var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif|.pdf|.doc|.docx|.xls|.xlsx|.csv)$");
+        if (regex.test(iUpload.value.toLowerCase())){
+		    if (input.files && input.files[0]) {
+			    var reader = new FileReader();
+                var fsize = iUpload.files[0].size;
+                var conVertSize = Math.round((fsize / 1024));
+                if(conVertSize > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload").val("");
+                    $('#ext').val("");
+                    return false;
+                }else{
+                    reader.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base').val(e.target.result);
+                        $('#ext').val($('#iUpload').val().split('.').pop());
+			        };
+			        reader.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload").val("");
+            return false;
+        }
+	}
+
+    function readURL1(input) {
+        var iUpload1 = document.getElementById("iUpload1");
+        var regex1 = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif|.pdf|.doc|.docx|.xls|.xlsx|.csv)$");
+        if (regex1.test(iUpload1.value.toLowerCase())) {
+		    if (input.files && input.files[0]) {
+			    var reader1 = new FileReader();
+                var fsize1 = iUpload1.files[0].size;
+                var conVertSize1 = Math.round((fsize1 / 1024));
+                if(conVertSize1 > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload1").val("");
+                    return false;
+                }else{
+                    reader1.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base1').val(e.target.result);
+                        $('#ext1').val($('#iUpload1').val().split('.').pop());
+			        };
+			        reader1.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload1").val("");
+            return false;
+        }
+	}
+
+    function readURL2(input) {
+        var iUpload2 = document.getElementById("iUpload2");
+        var regex2 = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif|.pdf|.doc|.docx|.xls|.xlsx|.csv)$");
+        if (regex2.test(iUpload2.value.toLowerCase())) {
+		    if (input.files && input.files[0]) {
+			    var reader2 = new FileReader();
+                var fsize2 = iUpload2.files[0].size;
+                var conVertSize2 = Math.round((fsize2 / 1024));
+                if(conVertSize2 > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload2").val("");
+                    return false;
+                }else{
+                    reader2.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base2').val(e.target.result);
+                        $('#ext2').val($('#iUpload2').val().split('.').pop());
+			        };
+			        reader2.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload2").val("");
+            return false;
+        }
+	}
+
+    function readURL01(input) {
+        var iUpload01 = document.getElementById("iUpload01");
+        var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif|.pdf|.doc|.docx|.xls|.xlsx|.csv)$");
+        if (regex.test(iUpload01.value.toLowerCase())){
+		    if (input.files && input.files[0]) {
+			    var reader = new FileReader();
+                var fsize = iUpload01.files[0].size;
+                var conVertSize = Math.round((fsize / 1024));
+                if(conVertSize > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload01").val("");
+                    $('#ext').val("");
+                    return false;
+                }else{
+                    reader.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base01').val(e.target.result);
+                        $('#ext01').val($('#iUpload01').val().split('.').pop());
+			        };
+			        reader.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload01").val("");
+            return false;
+        }
+	}
+
+    function readURL02(input) {
+        var iUpload1 = document.getElementById("iUpload02");
+        var regex1 = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif|.pdf|.doc|.docx|.xls|.xlsx|.csv)$");
+        if (regex1.test(iUpload1.value.toLowerCase())) {
+		    if (input.files && input.files[0]) {
+			    var reader1 = new FileReader();
+                var fsize1 = iUpload1.files[0].size;
+                var conVertSize1 = Math.round((fsize1 / 1024));
+                if(conVertSize1 > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload02").val("");
+                    return false;
+                }else{
+                    reader1.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base02').val(e.target.result);
+                        $('#ext02').val($('#iUpload01').val().split('.').pop());
+			        };
+			        reader1.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload02").val("");
+            return false;
+        }
+	}
+
+    function readURL03(input) {
+        var iUpload2 = document.getElementById("iUpload03");
+        var regex2 = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif|.pdf|.doc|.docx|.xls|.xlsx|.csv)$");
+        if (regex2.test(iUpload2.value.toLowerCase())) {
+		    if (input.files && input.files[0]) {
+			    var reader2 = new FileReader();
+                var fsize2 = iUpload2.files[0].size;
+                var conVertSize2 = Math.round((fsize2 / 1024));
+                if(conVertSize2 > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload03").val("");
+                    return false;
+                }else{
+                    reader2.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base03').val(e.target.result);
+                        $('#ext03').val($('#iUpload03').val().split('.').pop());
+			        };
+			        reader2.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload03").val("");
+            return false;
+        }
+	}
+
+    var EmployerID = "@Session["EMPLOYER_ID"]";
+
+    setTimeout(function() {
+        var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#myassigned-data-table').DataTable({
+                        "serverSide": true,
+                        "stateSave": true,
+                        "language": {
+                             "processing": "<img src='./img/spinner.gif'>"
+                        },
+                        "processing": true,
+                        "search": {
+                            "caseInsensitive": false
+                        },
+                        "orderMulti" : true,
+                        "ajax": {
+                            "type": 'GET',
+                            "url": "@Url.Action("GetMyAssignedRequests", "Requests")",
+                            //"data": {EmployerID: EmployerID}
+                        },
+                        "columns": [
+                            {"data": "RequestID"},
+                            {"data": "Creator" },
+                            {"data": "Category" },
+                            {"data": "Comment"},
+                            {"data": "Datecreated" },
+                            {"data": "CurrentStatus" },
+                            {},
+                            {},
+                        ],
+                        "aoColumns": [
+                            {"mData": "RequestID", sDefaultContent: ""},
+                            {"mData": "Creator", sDefaultContent: ""},
+                            {"mData": "Category", sDefaultContent: ""},
+                            {"mData": "Comment", sDefaultContent: ""},
+                            {"mData": "Datecreated", sDefaultContent: ""},
+                            {"mData": "CurrentStatus", sDefaultContent: ""},
+                            {},
+                            {},
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               } )
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [5],
+                              mRender : function (data, type, row, meta) {
+                                    localStorage.setItem("CommentId_"+row.RequestID, row.Comment);
+                                    if(row.CurrentStatus == "Initiated"){
+                                        return '<button class="btn btn-danger">Initiated</button>';
+                                    }else if(row.CurrentStatus == "Assigned"){
+                                        return '<button class="btn btn-warning">Assigned</button>';
+                                    }else if(row.CurrentStatus == "Cancelled"){
+                                        return '<button class="btn btn-dark">Cancelled</button>';
+                                    }else if(row.CurrentStatus == "Resolved"){
+                                        return '<button class="btn btn-success">Resolved</button>';
+                                    }
+                              }
+                            },
+                            {targets: [3],
+                                mRender: function (data, type, row, meta) {
+                                    return data.substr( 0, 20 );
+                                }
+                            },
+                            { targets : [6],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url = '@Url.Action("Details", "Requests")' + '?RequestId=' + row.RequestID;
+                                    return '<a href="'+url+'" class="btn btn-info viewdetails" data-status="'+row.CurrentStatus+'" data-container="body" data-status="'+row.CurrentStatus+'" data-cid="'+row.CurrentAssignedToID+'" data-toggle="m-tooltip" data-placement="top" data-original-title="View Details" title="View Details"><i class="fa fa-eye fa-2x"></i></a>';
+                                    //return '<button type="button" class="btn btn-dark" id="assignTicket" data-toggle="modal" data-id="'+row.RequestID+'" data-target="#exampleModal" data-toggle="tooltip" title="Administer Ticket">Administer Ticket</button> <a href="'+url+'" class="btn btn-info" data-toggle="tooltip" title="View details">View Details</a>';
+                              }
+                            },
+                            { targets : [7],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url = '@Url.Action("Details", "Requests")' + '?RequestId=' + row.RequestID;
+                                    if(row.CurrentStatus == "Resolved" || row.CurrentStatus == "Cancelled"){
+                                        return '';
+                                    }else{
+                                        return '<button type="button" class="btn btn-dark" id="assignTicket" data-container="body" data-cid="'+row.CurrentAssignedToID+'" data-placement="top" data-original-title="Administer Ticket" data-toggle="modal" data-id="'+row.RequestID+'" data-target="#exampleModal" title="Administer Ticket"><i class="fa fa-exchange fa-2x"></i></button>';
+                                    }
+                              }
+                            }
+                        ],
+                        "lengthMenu": [[100, 150, 200, 250], [100, 150, 200, 250]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+    }, 500);
+
+    setTimeout(function() {
+        var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#my-data-table').DataTable({
+                        "serverSide": true,
+                        "stateSave": true,
+                        "language": {
+                             "processing": "<img src='./img/spinner.gif'>"
+                        },
+                        "processing": true,
+                        "search": {
+                            "caseInsensitive": false
+                        },
+                        "orderMulti" : true,
+                        "ajax": {
+                            "type": 'GET',
+                            "url": "@Url.Action("GetMyRoleRequests", "Requests")",
+                            //"data": {EmployerID: EmployerID}
+                        },
+                        "columns": [
+                            {"data": "RequestID"},
+                            {"data": "Creator" },
+                            {"data": "Category" },
+                            {"data": "Comment"},
+                            {"data": "Datecreated" },
+                            {"data": "CurrentStatus" },
+                            {},
+                            {},
+                        ],
+                        "aoColumns": [
+                            {"mData": "RequestID", sDefaultContent: ""},
+                            {"mData": "Creator", sDefaultContent: ""},
+                            {"mData": "Category", sDefaultContent: ""},
+                            {"mData": "Comment", sDefaultContent: ""},
+                            {"mData": "Datecreated", sDefaultContent: ""},
+                            {"mData": "CurrentStatus", sDefaultContent: ""},
+                            {},
+                            {},
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               } )
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [5],
+                              mRender : function (data, type, row, meta) {
+                                    localStorage.setItem("CommentId_"+row.RequestID, row.Comment);
+                                    if(row.CurrentStatus == "Initiated"){
+                                        return '<button class="btn btn-danger">Initiated</button>';
+                                    }else if(row.CurrentStatus == "Assigned"){
+                                        return '<button class="btn btn-warning">Assigned</button>';
+                                    }else if(row.CurrentStatus == "Cancelled"){
+                                        return '<button class="btn btn-dark">Cancelled</button>';
+                                    }else if(row.CurrentStatus == "Resolved"){
+                                        return '<button class="btn btn-success">Resolved</button>';
+                                    }
+                              }
+                            },
+                            {targets: [3],
+                                mRender: function (data, type, row, meta) {
+                                    return data.substr( 0, 20 );
+                                }
+                            },
+                            { targets : [6],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url = '@Url.Action("Details", "Requests")' + '?RequestId=' + row.RequestID;
+                                    return '<a href="'+url+'" class="btn btn-info viewdetails" data-container="body" data-status="'+row.CurrentStatus+'" data-cid="'+row.CurrentAssignedToID+'" data-toggle="m-tooltip" data-placement="top" data-original-title="View Details" title="View Details"><i class="fa fa-eye fa-2x"></i></a>';
+                                    //return '<button type="button" class="btn btn-dark" id="assignTicket" data-toggle="modal" data-id="'+row.RequestID+'" data-target="#exampleModal" data-toggle="tooltip" title="Administer Ticket">Administer Ticket</button> <a href="'+url+'" class="btn btn-info" data-toggle="tooltip" title="View details">View Details</a>';
+                              }
+                            },
+                            { targets : [7],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url = '@Url.Action("Details", "Requests")' + '?RequestId=' + row.RequestID;
+                                    if(row.CurrentStatus == "Resolved" || row.CurrentStatus == "Cancelled"){
+                                        return '';
+                                    }else{
+                                        return '<button type="button" class="btn btn-dark" id="assignTicket" data-container="body" data-placement="top" data-cid="'+row.CurrentAssignedToID+'" data-original-title="Administer Ticket" data-toggle="modal" data-id="'+row.RequestID+'" data-target="#exampleModal" title="Administer Ticket"><i class="fa fa-exchange fa-2x"></i></button>';
+                                    }
+                              }
+                            }
+                        ],
+                        "lengthMenu": [[100, 150, 200, 250], [100, 150, 200, 250]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+    }, 500);
+
+    setTimeout(function() {
+        var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#un-data-table').DataTable({
+                        "serverSide": true,
+                        "stateSave": true,
+                        "language": {
+                             "processing": "<img src='../img/spinner.gif'>"
+                        },
+                        "processing": true,
+                        "search": {
+                            "caseInsensitive": false
+                        },
+                        "orderMulti" : true,
+                        "ajax": {
+                            "type": 'GET',
+                            "url": "@Url.Action("GetRoleUnAssignRequests", "Requests")",
+                            //"data": {EmployerID: EmployerID}
+                        },
+                        "columns": [
+                            {"data": "RequestID"},
+                            {"data": "Creator" },
+                            {"data": "Category" },
+                            {"data": "Comment"},
+                            {"data": "Datecreated" },
+                            {"data": "CurrentStatus" },
+                            {},
+                            {},
+                        ],
+                        "aoColumns": [
+                            {"mData": "RequestID", sDefaultContent: ""},
+                            {"mData": "Creator", sDefaultContent: ""},
+                            {"mData": "Category", sDefaultContent: ""},
+                            {"mData": "Comment", sDefaultContent: ""},
+                            {"mData": "Datecreated", sDefaultContent: ""},
+                            {"mData": "CurrentStatus", sDefaultContent: ""},
+                            {},
+                            {},
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               } )
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [5],
+                              mRender : function (data, type, row, meta) {
+                                    localStorage.setItem("CommentId_"+row.RequestID, row.Comment);
+                                    if(row.CurrentStatus == "Initiated"){
+                                        return '<button class="btn btn-danger">Initiated</button>';
+                                    }else if(row.CurrentStatus == "Assigned"){
+                                        return '<button class="btn btn-warning">Assigned</button>';
+                                    }else if(row.CurrentStatus == "Cancelled"){
+                                        return '<button class="btn btn-dark">Cancelled</button>';
+                                    }else if(row.CurrentStatus == "Resolved"){
+                                        return '<button class="btn btn-success">Resolved</button>';
+                                    }
+                              }
+                            },
+                            {targets: [3],
+                                mRender: function (data, type, row, meta) {
+                                    return data.substr( 0, 20 );
+                                }
+                            },
+                            { targets : [6],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url = '@Url.Action("Details", "Requests")' + '?RequestId=' + row.RequestID;
+                                    return '<a href="'+url+'" class="btn btn-info viewdetails" data-container="body" data-status="'+row.CurrentStatus+'" data-cid="'+row.CurrentAssignedToID+'" data-toggle="m-tooltip" data-placement="top" data-original-title="View Details" title="View Details"><i class="fa fa-eye fa-2x"></i></a>';
+                                    //return '<button type="button" class="btn btn-dark" id="assignTicket" data-toggle="modal" data-id="'+row.RequestID+'" data-target="#exampleModal" data-toggle="tooltip" title="Administer Ticket">Administer Ticket</button> <a href="'+url+'" class="btn btn-info" data-toggle="tooltip" title="View details">View Details</a>';
+                              }
+                            },
+                            { targets : [7],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url = '@Url.Action("Details", "Requests")' + '?RequestId=' + row.RequestID;
+                                    if(row.CurrentStatus == "Resolved" || row.CurrentStatus == "Cancelled"){
+                                        return '';
+                                    }else{
+                                        return '<button type="button" class="btn btn-dark" id="assignTicket" data-container="body" data-placement="top" data-cid="'+row.CurrentAssignedToID+'" data-original-title="Administer Ticket" data-toggle="modal" data-id="'+row.RequestID+'" data-target="#exampleModal" title="Administer Ticket"><i class="fa fa-exchange fa-2x"></i></button>';
+                                    }
+                              }
+                            }
+                        ],
+                        "lengthMenu": [[100, 150, 200, 250], [100, 150, 200, 250]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+    }, 2500);
+
+    setTimeout(function() {
+        var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "stateSave": true,
+                        "language": {
+                             "processing": "<img src='../img/spinner.gif'>"
+                        },
+                        "processing": true,
+                        "search": {
+                            "caseInsensitive": false
+                        },
+                        "orderMulti" : true,
+                        "ajax": {
+                            "type": 'GET',
+                            "url": "@Url.Action("GetRoleRequests", "Requests")",
+                            //"data": {EmployerID: EmployerID}
+                        },
+                        "columns": [
+                            {"data": "RequestID"},
+                            {"data": "Creator" },
+                            {"data": "Category" },
+                            {"data": "Comment"},
+                            {"data": "Datecreated" },
+                            {"data": "CurrentAssignedToName" },
+                            {},
+                            {},
+                        ],
+                        "aoColumns": [
+                            {"mData": "RequestID", sDefaultContent: ""},
+                            {"mData": "Creator", sDefaultContent: ""},
+                            {"mData": "Category", sDefaultContent: ""},
+                            {"mData": "Comment", sDefaultContent: ""},
+                            {"mData": "Datecreated", sDefaultContent: ""},
+                            {"mData": "CurrentAssignedToName", sDefaultContent: ""},
+                            {},
+                            {},
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               } )
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [6],
+                              mRender : function (data, type, row, meta) {
+                                    localStorage.setItem("CommentId_"+row.RequestID, row.Comment);
+                                    if(row.CurrentStatus == "Initiated"){
+                                        return '<button class="btn btn-danger">Initiated</button>';
+                                    }else if(row.CurrentStatus == "Assigned"){
+                                        return '<button class="btn btn-warning">Assigned</button>';
+                                    }else if(row.CurrentStatus == "Cancelled"){
+                                        return '<button class="btn btn-dark">Cancelled</button>';
+                                    }else if(row.CurrentStatus == "Resolved"){
+                                        return '<button class="btn btn-success">Resolved</button>';
+                                    }
+                              }
+                            },
+                            {targets: [3],
+                                mRender: function (data, type, row, meta) {
+                                    return data.substr( 0, 20 );
+                                }
+                            },
+                            { targets : [7],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url = '@Url.Action("Details", "Requests")' + '?RequestId=' + row.RequestID;
+                                    var url2 = '@Url.Action("Details", "Requests")' + '?RequestId=' + row.RequestID;
+                                    if(row.CurrentStatus == "Resolved" || row.CurrentStatus == "Cancelled"){
+                                        return '<a href="'+url+'" class="btn btn-info viewdetails" data-status="'+row.CurrentStatus+'" data-container="body" data-toggle="m-tooltip" data-placement="top" data-status="'+row.CurrentStatus+'" data-cid="'+row.CurrentAssignedToID+'" data-original-title="View Details" title="View Details"><i class="fa fa-eye fa-2x"></i></a>' + "" + "";
+                                    }else{
+                                        return '<a href="'+url+'" class="btn btn-info viewdetails" data-status="'+row.CurrentStatus+'" data-container="body" data-toggle="m-tooltip" data-placement="top" data-status="'+row.CurrentStatus+'" data-original-title="View Details" data-cid="'+row.CurrentAssignedToID+'" title="View Details"><i class="fa fa-eye fa-2x"></i></a>'+ " " + '<button type="button" class="btn btn-dark" id="assignTicket" data-container="body" data-cid="'+row.CurrentAssignedToID+'" data-placement="top" data-original-title="Administer Ticket" data-toggle="modal" data-id="'+row.RequestID+'" data-target="#exampleModal" title="Administer Ticket"><i class="fa fa-exchange fa-2x"></i></button>';
+                                    }
+                              }
+                            }
+                        ],
+                        "lengthMenu": [[100, 150, 200, 250], [100, 150, 200, 250]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+    }, 4000);
+
+
+    $(document).on('click', '.viewdetails', function(){
+        var RequestId = $(this).closest('tr').find('td:nth-child(1)').text();
+        localStorage.setItem("RequestId", RequestId);
+        var RequestStatus = $(this).data('status');
+        localStorage.setItem("RequestStatus", RequestStatus);
+    });
+
+    var webUserId = "@ViewBag.WebuserID";
+
+    $(document).on('click', '#assignTicket', function(){
+        var requestID = $(this).data("id");
+        var AssignedId = $(this).data("cid");
+        $("#requestId").val(requestID)
+        $("#exampleModalLabel").html("Assign Ticket ID:" +requestID);
+        localStorage.setItem("AssignedId", AssignedId)
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetInternalUsers", "Requests")",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $.grep(item, function (user, i){
+                       if(user.ID != webUserId && user.ID != AssignedId){
+                            $('#internalStaff1').append($('<option>', {
+                                    value: user.ID +"|"+user.ROLE_ID,
+                                    text: user.FULLNAME
+                            }));
+                        }
+                    });
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '#viewAttachement', function(){
+        var requestID = $(this).data("id");
+        $("#requestId").val(requestID)
+        $("#exampleModalLabel1").html("Assign Ticket ID:" +requestID);
+
+        //var image = new Image();
+        //image.src = 'data:image/png;base64,iVBORw0K...';
+        //document.body.appendChild(image);
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetRequestDocs", "Requests")'+ '?RequestId=' + requestID,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $.grep(item, function (docs, i){
+                        $('.attachmentDocs').html("");
+                        if(docs.Doc != ""){
+                            $('.attachmentDocs').append(
+                                '<li><h5>'+docs.Docname+'</h5></li>'
+                            );
+                        }else{
+                            $('.attachmentDocs').append(
+                                '<li><h5>No Attachement</h5></li>'
+                            );
+                        }
+                    });
+                });
+            }
+        });
+    });
+
+    $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex ) {
+            var mStatus = $('#mStatus').val();
+            var status = data[5] || 0; // use data for the age column
+            if(isNaN(mStatus)||(mStatus == status))
+            {
+                return true;
+            }
+            return false;
+
+        }
+    );
+
+    $('#mStatus').change(function() {
+        dt.draw();
+        console.log($('#mStatus').val());
+    });
+
+    var itm = $("#mStatus select")
+
+    itm.unbind();
+    itm.keyup(function (e) {
+        //enter or tab
+    console.log(this.value);
+    console.log(assetListVM.search(this.value).draw());
+        if (e.keyCode == 13){
+            console.log(this.value);
+            dt.search(this.value).draw();
+        }
+    });
+</script>
+

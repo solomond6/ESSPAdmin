@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Roles
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Role List
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (ViewBag.Message != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.Message
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (ViewBag.sMessage != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.sMessage
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Employers List
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <a href="@Url.Action("Create", "AdminViews")" class="btn btn-info">Create Views</a>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                @if (ViewBag.Error != null)
+                {
+                    <alert class="alert alert-danger">@ViewBag.Error</alert>
+                }
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Code</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+<script type="text/javascript">
+
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "processing": true,
+                        "ajax": {
+                            "url": "@Url.Action("GetAllRoles", "AdminViews")"
+                        },
+                        "columns": [
+                            {"data": "ID"},
+                            {"data": "Name"},
+                            {"data": "Code" },
+                            {}
+                        ],
+                        "aoColumns": [
+                            {"mData": "ID", sDefaultContent: ""},
+                            {"mData": "Name", sDefaultContent: ""},
+                            {"mData": "Code", sDefaultContent: ""},
+                            {}
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'View Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               })
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [3],
+                              mRender : function (data, type, row, meta) {
+                                    var url = '@Url.Action("EditRole", "AdminViews")' + '?roleId=' + row.ID;
+                                    var url2 = '@Url.Action("RoleDetails", "AdminViews")' + '?roleId=' + row.ID;
+                                    return '<a href="'+url+'" class="btn btn-warning btn-sm roleBtn" data-id="'+row.ID+'" data-name="'+row.Name+'">Map View To Role</a> <a href="'+url2+'" class="btn btn-info btn-sm roleBtn2" data-id="'+row.ID+'" data-name="'+row.Name+'">Role Details</a>'
+                              }
+                            }
+                        ],
+                        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+
+    $(document).on('click', '.roleBtn', function(){
+        var roleId = $(this).data('id');
+        var roleName = $(this).data('name');
+        localStorage.setItem("roleId", roleId);
+        localStorage.setItem("roleName", roleName);
+    });
+
+</script>

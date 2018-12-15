@@ -1,0 +1,1002 @@
+﻿
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Returned Schedule Details
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Returned Schedule Details
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (ViewBag.Message != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.Message
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Returned Schedule: 
+                            @if (ViewBag.RequestId != null)
+                            {
+                                @ViewBag.RequestId;
+
+                            }
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="m-portlet__body">
+                <div class="col-md-12" style="padding:0px;">
+                    <h5>Comment</h5>
+                    <div class="row" style="padding:0px 15px;">
+                        <div class="col-md-7 TicketComment" id="TicketComment" style="padding:0"></div>
+                        <div class="col-md-5"></div>
+                        <br />
+                        <div class="attachedDocuments" id="attachedDocuments">
+                            <br/>
+                            <h5>Original Attachments</h5>
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <h5>Returned Schedule Details</h5>
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="returnedSchudule-data-table" class="datatable__table table table-striped" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th scope="col">Employer Code</th>
+                                <th scope="col">Employer Name</th>
+                                <th scope="col">Classification</th>
+                                <th scope="col">Narration</th>
+                                <th scope="col">Amount On Schedule</th>
+                                <th scope="col">Amount Returned</th>
+                                <th scope="col">Return Date</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <br />
+                <br />
+                <br />
+                <h5>Assignment History</h5>
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped table-bordered" data-toggle="table" data-show-toggle="true" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th scope="col">RequestId</th>
+                                <th scope="col">Comment</th>
+                                <th scope="col">Assignee</th>
+                                <th scope="col">Assignor</th>
+                                <th scope="col">Assign Date</th>
+                                <th scope="col">Assign Status</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <br />
+                <br />
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLabel">New Request</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form name="request" action='@Url.Action("UpdateRequest", "ReturnedSchedule")' method="post" enctype="multipart/form-data" id="updateRequest">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input name="requestId" type="hidden" value="" id="requestId" />
+                    <input name="EmployerCode" class="form-control" id="EmployerCode" required="" type="hidden">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Status:</label>
+                        <select name="statusUpdate" id="statusUpdate" class="form-control" required>
+                            <option value="">-Select A Status-</option>
+                            <option value="Assigned">Assign</option>
+                            <option value="Cancelled">Cancel</option>
+                            <option value="Resolved">Resolve</option>
+                        </select>
+                    </div>
+                    <div class="optionDiv">
+                        <div class="m-form__group form-group">
+                            <label for="">
+                                Assign To:
+                            </label>
+                            <div class="m-radio-inline">
+                                <label class="m-radio">
+                                    <input type="radio" name="example_3" value="1" />
+                                    Internal Staff
+                                    <span></span>
+                                </label>
+                                <label class="m-radio">
+                                    <input type="radio" name="example_3" value="2" />
+                                    Employer
+                                    <span></span>
+                                </label>
+                                <label class="m-radio">
+                                    <input type="radio" name="example_3" value="3" />
+                                    Custodian
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group internalStaff">
+                            <label for="recipient-name" class="col-form-label">Internal User:</label>
+                            <select name="internalUser" id="internalStaff1" class="form-control internalStaff1">
+                                <option value="">-Select A User-</option>
+                            </select>
+                        </div>
+                        <div class="form-group employerStaff">
+                            <label for="recipient-name" class="col-form-label">Employer Contact person:</label>
+                            <select name="externalUser" id="employerStaff1" class="form-control employerStaff1">
+                                <option value="">-Select A Employer Contact-</option>
+                            </select>
+                        </div>
+                        <div class="form-group custodianStaff">
+                            <label for="recipient-name" class="col-form-label">Employer Custodian Contact:</label>
+                            <select name="custodianUser" id="custodianStaff1" class="form-control custodianStaff1">
+                                <option value="">-Select A Custodian Contact-</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="m-form__group form-group">
+                        <label for="">Reason(s) for rejection</label>
+                        <div class="m-checkbox-inline">
+                            <label class="m-checkbox">
+                                <input type="checkbox" name="reasons[]" value="Unclear narration"> Unclear narration
+                                <span></span>
+                            </label>
+                            <label class="m-checkbox">
+                                <input type="checkbox" name="reasons[]" value="Duplicate contribution"> Duplicate contribution
+                                <span></span>
+                            </label>
+                            <label class="m-checkbox">
+                                <input type="checkbox" name="reasons[]" value="Invalid Contribution"> Invalid Contribution
+                                <span></span>
+                            </label>
+                            <label class="m-checkbox">
+                                <input type="checkbox" name="reasons[]" value="Under remittance"> Under remittance
+                                <span></span>
+                            </label>
+                            <label class="m-checkbox">
+                                <input type="checkbox" name="reasons[]" value="Over remittance"> Over remittance
+                                <span></span>
+                            </label>
+                            <label class="m-checkbox">
+                                <input type="checkbox" name="reasons[]" value="Negative contribution"> Negative contribution
+                                <span></span>
+                            </label>
+                            <label class="m-checkbox">
+                                <input type="checkbox" name="reasons[]" value="No PENCOM Code"> No PENCOM Code
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="m-form__group form-group">
+                        <label>Classification</label>
+                        <div class="m-radio-list">
+                            <label class="m-radio m-radio--success">
+                                <input type="radio" name="classification" value="Full scheduled returned - Whole Payment Returned" required> Full scheduled returned - Whole Payment Returned
+                                <span></span>
+                            </label>
+                            <label class="m-radio m-radio--brand">
+                                <input type="radio" name="classification" value="Part of scheduled returned – Part Payment Returned" required> Part of scheduled returned – Part Payment Returned
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="controls row">
+                        <div class="col">
+                            <label>Narration</label>
+                        </div>
+                        <div class="col">
+                            <label>Amount on schedule</label>
+                        </div>
+                        <div class="col">
+                            <label>Amount returned</label>
+                        </div>
+                    </div>
+
+                    <div class="row narations">
+                        <div class="col nopadding">
+                            <input type="text" class="form-control narration" id="narration" name="narration" value="" placeholder="Narration" readonly required>
+                        </div>
+                        <div class="col nopadding">
+                            <input type="number" class="form-control" id="AmountSchedule" name="AmountSchedule" value="" min="0" placeholder="Amount on schedule" required>
+                        </div>
+                        <div class="col nopadding">
+                            <input type="number" class="form-control" id="AmountReturned" name="AmountReturned" value="" min="0" placeholder="Amount returned" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Message:</label>
+                        <textarea name="Comment" class="form-control" id="message-text" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Attachment:</label>
+                        <small>File size must be less than 4mb and .csv file type only accepted.</small>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile" class="custom-file-input" id="iUpload" onchange="readURL(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile" class="form-control" id="base" />
+                            <input type="hidden" name="fileExt" class="form-control" id="ext" />
+                        </div>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile1" class="custom-file-input" id="iUpload1" onchange="readURL1(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile1" class="form-control" id="base1" />
+                            <input type="hidden" name="fileExt1" class="form-control" id="ext1" />
+                        </div>
+                        <div class="field_wrapper">
+                            <div class="input-group mb-3">
+                                <div class="custom-file">
+                                    <input type="file" name="attachFile2" class="custom-file-input" id="iUpload2" onchange="readURL2(this);">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="convertedFile2" class="form-control" id="base2" />
+                            <input type="hidden" name="fileExt2" class="form-control" id="ext2" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLabel">Attached Docs</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="attachmentHistoryDocs" class="attachmentHistoryDocs">
+                <br/>
+                <ul class=""></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+<script src="~/Scripts/download.js"></script>
+<script>
+    var CommentId;
+    getComment = "CommentId_"+localStorage.RequestId;
+    Comment = localStorage.getItem(getComment);
+    AssignedId = localStorage.getItem("AssignedId");
+    var RequestStatus = localStorage.getItem("RequestStatus");
+
+    var sAgent = window.navigator.userAgent;
+    var Idx = sAgent.indexOf("MSIE");
+
+    if(RequestStatus == "Cancelled" || RequestStatus == "Resolved"){
+        $("#assignTicket").hide();
+    }else{
+        $("#assignTicket").show();
+    }
+
+    $("#TicketComment").html(Comment);
+    var RequestId = "@ViewBag.RequestId";
+
+    function format (d){
+        return '<table class="table table-sm" cellpadding="5" cellspacing="0" border="0" style="padding-left:150px;" width="100%">'+
+            '<tr>'+
+                '<td><strong>Employer Code:</strong></td>'+
+                '<td>'+d.EmployerCode+'</td>'+
+                '<td><strong>Classification:</strong></td>'+
+                '<td>'+d.Classification+'</td>'+
+                '<td><strong>Return Date:</strong></td>'+
+                '<td>'+d.ReturnDate+'</td>'+
+            '</tr>'+
+            '<tr>'+
+                '<td><strong>Narration:</strong></td>'+
+                '<td>'+d.Narration+'</td>'+
+                '<td><strong>Amount On Schedule:</strong></td>'+
+                '<td>'+d.Amount_on_Schedule+'</td>'+
+                '<td><strong>Amount Returned:</strong></td>'+
+                '<td>'+d.Amount_Returned+'</td>'+
+            '</tr>'+
+            '<tr>'+
+                '<td colspan="6"><button class="popoverButton btn btn-sm btn-warning" data-historyid="'+d.HistoryID+'">View Errors</button></td>'
+            '</tr>'+
+        '</table>';
+    }
+
+    var detailRows = [];
+
+    $('#employer-data-table tbody').on('click', 'tr td.details-control', function (){
+        var tr = $(this).closest('tr');
+        var row = dt.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+
+            // Remove from the 'open' array
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+
+            // Add to the 'open' array
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    });
+
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "searching": false,
+                        "paging": true,
+                        "ajax": {
+                            "type": 'GET',
+                            "url": "@Url.Action("GetRequestsHistory", "ReturnedSchedule")",
+                            "data": {RequestId: RequestId}
+                        },
+                        "columns": [
+                            {
+                                "class": "details-control",
+                                "orderable": false,
+                                "data": null,
+                                "defaultContent": ""
+                            },
+                            {"data": "RequestID"},
+                            {"data": "Comment" },
+                            {"data": "Assignee"},
+                            {"data": "Assignor" },
+                            {"data": "AssignDate" },
+                            {"data": "AssignStatus" },
+                            {},
+                            {}
+                        ],
+                        "aoColumns": [
+                            {
+                                "class": "details-control",
+                                "orderable": false,
+                                "data": null,
+                                "defaultContent": ""
+                            },
+                            {"mData": "RequestID", sDefaultContent: ""},
+                            {"mData": "Comment", sDefaultContent: ""},
+                            {"mData": "Assignee", sDefaultContent: ""},
+                            {"mData": "Assignor", sDefaultContent: ""},
+                            {"mData": "AssignDate", sDefaultContent: ""},
+                            {"mData": "AssignStatus", sDefaultContent: ""},
+                            {},
+                            {}
+                        ],
+                        responsive: {
+                            details: {
+                                display: $.fn.dataTable.Responsive.display.modal( {
+                                    header: function ( row ) {
+                                        var data = row.data();
+                                        return 'History Details';
+                                    }
+                                } ),
+                                renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                    tableClass: 'table'
+                                } )
+                            }
+                        },
+                       columnDefs: [
+                            {
+                                "searchable": false,
+                                "orderable": false,
+                                "targets": -1
+                            },{
+                                "data": null,
+                                "defaultContent": "",
+                                "targets": -1
+                            },
+                            { targets : [6],
+                              mRender : function (data, type, row, meta) {
+                                    if(row.AssignStatus == "Initiated"){
+                                        return '<button class="btn btn-danger">Initiated</button>';
+                                    }else if(row.AssignStatus == "Assigned"){
+                                        return '<button class="btn btn-warning">Assigned</button>';
+                                    }else if(row.AssignStatus == "Cancelled"){
+                                        return '<button class="btn btn-dark">Cancelled</button>';
+                                    }else if(row.AssignStatus == "Resolved"){
+                                        return '<button class="btn btn-success">Resolved</button>';
+                                    }
+                              }
+                            },
+                            { targets : [7],
+                              mRender : function (data, type, row, meta) {
+                                   return '<button type="button" class="btn btn-info" id="historyId" data-toggle="modal" data-id="'+row.HistoryID+'" data-target="#exampleModal" data-toggle="tooltip" title="View Attachment">View Attachment(s)</button>';
+                              }
+                            },
+                            { targets : [8],
+                                mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    if(RequestStatus == "Cancelled" || RequestStatus == "Resolved"){
+                                        return '';
+                                    }else{
+                                        return '<button type="button" class="btn btn-dark btn-sm" id="assignTicket" data-container="body" data-placement="top" data-original-title="Administer Ticket" data-toggle="modal" data-EmployerCode="'+row.EmployerCode+'" data-Classification="'+row.Classification+'" data-Narration="'+row.Narration+'" data-Amount_on_Schedule="'+row.Amount_on_Schedule+'" data-Amount_Returned="'+row.Amount_Returned+'" data-target="#exampleModal2" title="Administer Ticket">Administer Schedule</button>';
+                                    }
+                                }
+                            }
+                        ],
+                        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+
+
+        $('#returnedSchudule-data-table').DataTable({
+            "searching": false,
+            "paging": false,
+            "ajax": {
+                "type": 'GET',
+                "url": "@Url.Action("GetRequestsAddendum", "ReturnedSchedule")",
+                "data": {RequestId: RequestId}
+            },
+            "columns": [
+                {"data": "EmployerCode"},
+                {"data": "EmployerName"},
+                {"data": "Classification" },
+                {"data": "Narration" },
+                {"data": "Amount_on_Schedule" },
+                {"data": "Amount_Returned" },
+                {"data": "ReturnDate"},
+                {},
+            ],
+            "aoColumns": [
+                {"mData": "EmployerCode", sDefaultContent: ""},
+                {"mData": "EmployerName", sDefaultContent: ""},
+                {"mData": "Classification", sDefaultContent: ""},
+                {"mData": "Narration", sDefaultContent: ""},
+                {"mData": "Amount_on_Schedule", sDefaultContent: ""},
+                {"mData": "Amount_Returned", sDefaultContent: ""},
+                {"mData": "ReturnDate", sDefaultContent: ""},
+                {},
+            ],
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.modal( {
+                        header: function ( row ) {
+                            var data = row.data();
+                            return 'Employer Details';
+                        }
+                    } ),
+                    renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                        tableClass: 'table'
+                    } )
+                }
+            },
+            columnDefs: [
+                {
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": -1
+                },{
+                    "data": null,
+                    "defaultContent": "",
+                    "targets": -1
+                },
+                { targets : [6],
+                    mRender : function (data, type, row, meta) {
+                        var userId = row.USER_NAME;
+                        if(RequestStatus == "Cancelled" || RequestStatus == "Resolved"){
+                            return '';
+                        }else{
+                            return '<button class="popoverButton btn btn-sm btn-warning" data-historyid="'+row.HistoryID+'">View Errors</button>';
+                        }
+                    }
+                },
+                { targets : [7],
+                    mRender : function (data, type, row, meta) {
+                        var userId = row.USER_NAME;
+                        if(RequestStatus == "Cancelled" || RequestStatus == "Resolved"){
+                            return '';
+                        }else{
+                            return '<button type="button" class="btn btn-dark btn-sm" id="assignTicket" data-container="body" data-placement="top" data-original-title="Administer Ticket" data-toggle="modal" data-EmployerCode="'+row.EmployerCode+'" data-Classification="'+row.Classification+'" data-Narration="'+row.Narration+'" data-Amount_on_Schedule="'+row.Amount_on_Schedule+'" data-Amount_Returned="'+row.Amount_Returned+'" data-target="#exampleModal2" title="Administer Ticket">Administer Schedule</button>';
+                        }
+                    }
+                }
+            ]
+        });
+
+
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetRequestDocs", "Requests")'+ '?RequestId=' + RequestId,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $.grep(item, function (docs, i){
+                        if(docs.Doc != ""){
+                            if (Idx > 0){
+                                if(docs.Docext == ".jpg" || docs.Docext == ".jpeg" || docs.Docext == ".png" || docs.Docext == ".gif"){
+                                    var listDocs = '<li><h5><i class="fa fa-image fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docId">'+docs.Docname+'</a></li>';
+                                }else if(docs.Docext == ".pdf" || docs.Docext == ".doc" || docs.Docext == ".docx"){
+                                    var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docId">'+docs.Docname+'</a></li>';
+                                }else if(docs.Docext == ".csv" || docs.Docext == ".xls" || docs.Docext == ".xlsx"){
+                                    var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docName='+docs.Docname+' id="docId">'+docs.Docname+'</a></li>';
+                                }
+                            }
+                            else if (!!navigator.userAgent.match(/Trident\/7\./)){
+                                if(docs.Docext == ".jpg" || docs.Docext == ".jpeg" || docs.Docext == ".png" || docs.Docext == ".gif"){
+                                    var listDocs = '<li><h5><i class="fa fa-image fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docId">'+docs.Docname+'</a></li>';
+                                }else if(docs.Docext == ".pdf" || docs.Docext == ".doc" || docs.Docext == ".docx"){
+                                    var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docId">'+docs.Docname+'</a></li>';
+                                }else if(docs.Docext == ".csv" || docs.Docext == ".xls" || docs.Docext == ".xlsx"){
+                                    var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docName='+docs.Docname+' id="docId">'+docs.Docname+'</a></li>';
+                                }
+                            }
+                            else{
+                                if(docs.Docext == ".jpg" || docs.Docext == ".jpeg" || docs.Docext == ".png" || docs.Docext == ".gif"){
+                                    var listDocs = '<li><h5><i class="fa fa-image fa-3x"></i> <a href='+docs.Doc+' download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' target="_blank" id="docIds">'+docs.Docname+'</a></li>';
+                                }else if(docs.Docext == ".pdf" || docs.Docext == ".doc" || docs.Docext == ".docx"){
+                                    var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a href='+docs.Doc+' download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' target="_blank" id="docIds">'+docs.Docname+'</a></li>';
+                                }else if(docs.Docext == ".csv" || docs.Docext == ".xls" || docs.Docext == ".xlsx"){
+                                    var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a href='+docs.Doc+' download='+docs.Docname+' data-doc='+docs.Doc+' data-docName='+docs.Docname+' target="_blank" id="docIds">'+docs.Docname+'</a></li>';
+                                }
+                            }
+                        }else{
+                            var listDocs = '<li><h5>No Attachement</h5></li>';
+                        }
+                        //console.log(docs);
+                        $('#attachedDocuments ul').append(listDocs);
+                    });
+                });
+            }
+        });
+
+        $(document).on('click', '#historyId', function(){
+            var historyId = $(this).data("id");
+            $("#historyID").val(historyId)
+            $("#exampleModalLabel").html("History ID:" +historyId);
+            $("#attachmentHistoryDocs ul").empty();
+            items = [];
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetRequestHistoryDocs", "Requests")'+ '?historyId=' + historyId,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $.grep(item, function (docs, i){
+                            $("#attachmentHistoryDocs ul").empty();
+                            if(docs.Doc != ""){
+                                if (Idx > 0){
+                                    if(docs.Docext == ".jpg" || docs.Docext == ".jpeg" || docs.Docext == ".png" || docs.Docext == ".gif"){
+                                    items.push('<li><h5><i class="fa fa-image fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docIdHis">'+docs.Docname+'</a>');
+                                    }else if(docs.Docext == ".pdf" || docs.Docext == ".doc" || docs.Docext == ".docx"){
+                                        items.push('<li><h5><i class="fa fa-file fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docIdHis">'+docs.Docname+'</a>');
+                                    }else if(docs.Docext == ".csv" || docs.Docext == ".xls" || docs.Docext == ".xlsx"){
+                                        items.push('<li><h5><i class="fa fa-file fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docIdHis">'+docs.Docname+'</a>');
+                                    }
+                                }else if (!!navigator.userAgent.match(/Trident\/7\./)){
+                                    if(docs.Docext == ".jpg" || docs.Docext == ".jpeg" || docs.Docext == ".png" || docs.Docext == ".gif"){
+                                    items.push('<li><h5><i class="fa fa-image fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docIdHis">'+docs.Docname+'</a>');
+                                    }else if(docs.Docext == ".pdf" || docs.Docext == ".doc" || docs.Docext == ".docx"){
+                                        items.push('<li><h5><i class="fa fa-file fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docIdHis">'+docs.Docname+'</a>');
+                                    }else if(docs.Docext == ".csv" || docs.Docext == ".xls" || docs.Docext == ".xlsx"){
+                                        items.push('<li><h5><i class="fa fa-file fa-3x"></i> <a download='+docs.Docname+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' id="docIdHis">'+docs.Docname+'</a>');
+                                    }
+                                }else{
+                                    if(docs.Docext == ".jpg" || docs.Docext == ".jpeg" || docs.Docext == ".png" || docs.Docext == ".gif"){
+                                    items.push('<li><h5><i class="fa fa-image fa-3x"></i> <a href='+docs.Doc+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' target="_blank" id="docIdHis">'+docs.Docname+'</a>');
+                                    }else if(docs.Docext == ".pdf" || docs.Docext == ".doc" || docs.Docext == ".docx"){
+                                        items.push('<li><h5><i class="fa fa-file fa-3x"></i> <a href='+docs.Doc+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' target="_blank" id="docIdHis">'+docs.Docname+'</a>');
+                                    }else if(docs.Docext == ".csv" || docs.Docext == ".xls" || docs.Docext == ".xlsx"){
+                                        items.push('<li><h5><i class="fa fa-file fa-3x"></i> <a href='+docs.Doc+' data-doc='+docs.Doc+' data-docname='+docs.Docname+' target="_blank" id="docIdHis">'+docs.Docname+'</a>');
+                                    }
+                                }
+                            }else{
+                                items.push('<li><h5>No Attachment</h5>');
+                            }
+                            $('#attachmentHistoryDocs ul').html(items.join('</li>'));
+                        });
+                    });
+                }
+            });
+        });
+
+    $(document).ready(function() {
+        //This condition will check if form with id 'contact-form' is exist then only form reset code will execute.
+        if($('#updateRequest').length>0){
+            $('#updateRequest')[0].reset();
+        }
+    });
+
+    $('[data-toggle="tooltip"]').tooltip();
+    $('#startdate').datepicker();
+    $('#enddate').datepicker();
+
+    $(".internalStaff").hide();
+    $(".employerStaff").hide();
+    $(".custodianStaff").hide();
+    $(".optionDiv").hide();
+
+    $(document).on('change', '#statusUpdate', function(){
+        var selectedStatus = $("#statusUpdate").val();
+        if(selectedStatus == "Assigned"){
+            $(".optionDiv").show();
+            $("#updateRequest input[type='radio']").attr('required', 'true');
+        }else{
+            $(".optionDiv").hide();
+        }
+    });
+
+    $(document).on('change', '#updateRequest input', function() {
+        var selectedAssignee = $("#updateRequest input[type='radio']:checked").val();
+        if(selectedAssignee == "1"){
+            $(".internalStaff").show();
+            $(".employerStaff").hide();
+            $(".custodianStaff").hide();
+            $(".internalStaff1").attr('required', 'true');
+            $(".employerStaff1").removeAttr('required', 'true');
+            $(".custodianStaff1").removeAttr('required', 'true');
+        }else if(selectedAssignee == "2"){
+            $(".internalStaff").hide();
+            $(".employerStaff").show();
+            $(".custodianStaff").hide();
+            $(".internalStaff1").removeAttr('required', 'true');
+            $(".employerStaff1").attr('required', 'true');
+            $(".custodianStaff1").removeAttr('required', 'true');
+        }else if(selectedAssignee == "3"){
+            $(".internalStaff").hide();
+            $(".employerStaff").hide();
+            $(".custodianStaff").show();
+            $(".internalStaff1").removeAttr('required', 'true');
+            $(".employerStaff1").removeAttr('required', 'true');
+            $(".custodianStaff1").attr('required', 'true');
+        }
+    });
+
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("GetRequestCategory", "ReturnedSchedule")",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $.each(data, function (index, item) {
+                requestData = item;
+                jQuery.grep(item, function(requestCategory, i) {
+                     $('#requestCategory').append($('<option>', {
+                        value: requestCategory.ID,
+                        text: requestCategory.Descr
+                    }));
+                });
+            });
+        }
+    });
+
+
+
+    $(document).on('click', '.popoverButton', function(){
+        var historyId = $(this).data("historyid");
+        $("#historyID").val(historyId);
+        $("#exampleModalLabel").html("History ID:" +historyId);
+        items = [];
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetRequestsAddendumError", "ReturnedSchedule")'+ '?RequestId=' + RequestId +'&HistoryId=' + historyId,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $.grep(item, function (errors, i){
+                        $("#errorList ul").empty();
+                        if(errors != ""){
+                            items.push('<li>'+errors.ErrorName+'');
+                        }else{
+                            items.push('<li>No Error');
+                        }
+                        $('#errorList ul').html(items.join('</li>'));
+                    });
+                });
+            }
+        });
+        $(".popoverButton").popover({
+            html: true,
+            animation: false,
+            content: '<div id="errorList" class="errorList"><ul class="" style="margin-top: 0;margin-bottom: 0;padding-left: 10px;"></ul></div>',
+            placement: "bottom",
+            trigger:"click",
+            //template: '<div id="errorList" class="errorList"><ul class=""></ul></div>'
+        });
+    });
+
+    $(document).on("change", "#requestCategory", function(){
+        $("#requestCategory").val();
+        var result = [];
+        for (var i = 0; i < requestData.length; i++)
+        {
+            //console.log(requestData[i].ID);
+            if (requestData[i].ID == $("#requestCategory").val())
+            {
+                result.push(requestData[i]);
+                $('.description').html(requestData[i].Dynamictext);
+                documentLinks = requestData[i].Dynamicurl;
+                $('.documentLinks').html(documentLinks.replace("~", ", "));
+            }
+        }
+        //console.log(result);
+    });
+
+
+
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("GetExternalUsers", "ReturnedSchedule")",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $.each(data, function (index, item) {
+                $.grep(item, function (user, i){
+                        $('#employerStaff1').append($('<option>', {
+                            value: user.ID,
+                            text: user.FULLNAME +" ("+user.CompanyName +")",
+                        }));
+                });
+            });
+        }
+    });
+
+    function readURL(input) {
+        var iUpload = document.getElementById("iUpload");
+        var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.csv)$");
+        if (regex.test(iUpload.value.toLowerCase())){
+		    if (input.files && input.files[0]) {
+			    var reader = new FileReader();
+                var fsize = iUpload.files[0].size;
+                var conVertSize = Math.round((fsize / 1024));
+                if(conVertSize > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload").val("");
+                    $('#ext').val("");
+                    return false;
+                }else{
+                    reader.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base').val(e.target.result);
+                        $('#ext').val($('#iUpload').val().split('.').pop());
+			        };
+			        reader.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload").val("");
+            return false;
+        }
+	}
+
+    function readURL1(input) {
+        var iUpload1 = document.getElementById("iUpload1");
+        var regex1 = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.csv)$");
+        if (regex1.test(iUpload1.value.toLowerCase())) {
+		    if (input.files && input.files[0]) {
+			    var reader1 = new FileReader();
+                var fsize1 = iUpload1.files[0].size;
+                var conVertSize1 = Math.round((fsize1 / 1024));
+                if(conVertSize1 > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload1").val("");
+                    return false;
+                }else{
+                    reader1.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base1').val(e.target.result);
+                        $('#ext1').val($('#iUpload1').val().split('.').pop());
+			        };
+			        reader1.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload1").val("");
+            return false;
+        }
+	}
+
+    function readURL2(input) {
+        var iUpload2 = document.getElementById("iUpload2");
+        var regex2 = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.csv)$");
+        if (regex2.test(iUpload2.value.toLowerCase())) {
+		    if (input.files && input.files[0]) {
+			    var reader2 = new FileReader();
+                var fsize2 = iUpload2.files[0].size;
+                var conVertSize2 = Math.round((fsize2 / 1024));
+                if(conVertSize2 > "4000"){
+                    alert("Document size exceeds 4mb.");
+                    $("#iUpload2").val("");
+                    return false;
+                }else{
+                    reader2.onload = function (e) {
+				        $('#falseinput').attr('src', e.target.result);
+				        $('#base2').val(e.target.result);
+                        $('#ext2').val($('#iUpload2').val().split('.').pop());
+			        };
+			        reader2.readAsDataURL(input.files[0]);
+                }
+		    }
+        }
+        else {
+            alert("Please select a valid file type.");
+            $("#iUpload2").val("");
+            return false;
+        }
+	}
+
+    var webUserId = "@ViewBag.WebuserID";
+    //console.log(webUserId);
+    $(document).on('click', '#assignTicket', function(){
+        var employercode = $(this).data("employercode");
+        var classification = $(this).data("classification");
+        var narration = $(this).data("narration");
+        var amount_on_schedule = $(this).data("amount_on_schedule");
+        var amount_returned = $(this).data("amount_returned");
+
+        $("#EmployerCode").val(employercode);
+        $("#narration").val(narration);
+        $("#AmountSchedule").val(amount_on_schedule);
+        $("#AmountReturned").val(amount_returned);
+
+        $("#requestId").val(RequestId)
+        $("#exampleModalLabel").html("Assign Ticket ID:" +RequestId);
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetInternalUsers", "ReturnedSchedule")",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $.grep(item, function (user, i){
+                        if(user.ID != AssignedId){
+                                $('#internalStaff1').append($('<option>', {
+                                        value: user.ID +"|"+user.ROLE_ID,
+                                        text: user.FULLNAME
+                                }));
+                            }
+                    });
+                });
+            }
+        });
+    });
+
+    $(document).on("click", "#docId", function(){
+        var docname = $(this).data('docname');
+        var dataURI = $(this).data('doc');
+
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0){
+            byteString = atob(dataURI.split(',')[1]);
+        }
+        else{
+            byteString = unescape(dataURI.split(',')[1]);
+        }
+
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        var blobObject = new Blob([ia], {type:mimeString});
+        window.navigator.msSaveBlob(blobObject, docname);
+    });
+
+    $(document).on("click", "#docIdHis", function(){
+        var docname = $(this).data('docname');
+        var dataURI = $(this).data('doc');
+
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0){
+            byteString = atob(dataURI.split(',')[1]);
+        }
+        else{
+            byteString = unescape(dataURI.split(',')[1]);
+        }
+
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        var blobObject = new Blob([ia], {type:mimeString});
+        window.navigator.msSaveBlob(blobObject, docname);
+    });
+</script>
+

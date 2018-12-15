@@ -1,0 +1,167 @@
+﻿
+@{
+    ViewBag.Title = "ViewStaffs";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    New Admin User
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                New Admin
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        <div class="row">
+            <div class="col-lg-6">
+                <!--begin::Portlet-->
+                <div class="m-portlet">
+                    <div class="m-portlet__head">
+                        <div class="m-portlet__head-caption">
+                            <div class="m-portlet__head-title">
+                                <span class="m-portlet__head-icon m--hide">
+                                    <i class="la la-gear"></i>
+                                </span>
+                                <h3 class="m-portlet__head-text">
+                                    New Admin User
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                    <!--begin::Form-->
+                    
+                    <form class="m-form m-form--fit" method="post" action="@Url.Action("Create", "Admin")">
+                        @Html.AntiForgeryToken()
+                        <div class="m-portlet__body">
+                            <div class="m-form__section m-form__section--first">
+                                <div class="m-form__heading">
+                                    @if (ViewBag.Error != null)
+                                    {
+                                        <alert class="alert alert-danger">@ViewBag.Error</alert>
+                                    }
+                                </div>
+                                <div class="m-form__heading">
+                                    <h3 class="m-form__heading-title">User Info:</h3>
+                                </div>
+                                <div class="form-group m-form__group">
+                                    <label for="example_input_full_name">SAP ID:</label>
+                                    <span class="m-form__help">Please enter User SAP ID</span>
+                                    <input type="text" name="SAPID" class="form-control m-input sapId" placeholder="Enter SAP ID" required>
+                                    <span class="m-form__help SapName"></span>
+                                    <span class="m-form__help SapEmail"></span>
+                                    <span class="m-form__error SapError"></span>
+                                </div>
+                                <div class="form-group m-form__group">
+                                    <button type="button" class="btn btn-primary validate" value="Click to Validate SAP ID">Click to Validate SAP ID</button>
+                                </div>
+                                <div class="form-group m-form__group">
+                                    <label>Role:</label>
+                                    <select name="Role" class="form-control m-input" id="roles" required>
+                                        <option value="">Select A Role</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+                            <div class="m-form__actions m-form__actions--solid">
+                                <button type="submit" class="btn btn-success submitBtn">Submit</button>
+                                <button type="reset" class="btn btn-secondary">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!--end::Form-->
+                </div>
+                <!--end::Portlet-->
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+<script type="text/javascript">
+
+    $('.submitBtn').attr("disabled", "true");
+
+    $.ajax({
+        type: "GET",
+        url: "@Url.Action("GetAdminRoles", "Admin")",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $.each(data, function (index, item) {
+                jQuery.grep(item, function(role, i) {
+                     $('#roles').append($('<option>', {
+                        value: role.ID,
+                        text: role.Name
+                    }));
+                });
+            });
+        }
+    });
+
+    $(document).on('click', '.validate', function(){
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetValidSapId", "Admin")",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: {"SAPID": $(".sapId").val()},
+            beforeSend: function(){
+                $(".validate").attr('value', 'Checking SAPID...');
+                $(".validate").text('Checking SAPID...');
+            },
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    if(item[0] == "00"){
+                        $('.submitBtn').removeAttr("disabled", "true");
+                        $('.SapName').html(item[1]);
+                        $('.SapEmail').html(item[2]);
+                        $('.SapError').html("");
+                    }else{
+                        $('.submitBtn').attr("disabled", "true");
+                        $('.SapName').html("");
+                        $('.SapEmail').html("");
+                        $('.SapError').html("Invalid SAP ID");
+                    }
+                });
+            },
+            complete: function(){
+                $(".validate").attr('value', 'Click to Validate SAP ID');
+                $(".validate").text('Click to Validate SAP ID');
+            },
+        });
+    });
+</script>
+
+

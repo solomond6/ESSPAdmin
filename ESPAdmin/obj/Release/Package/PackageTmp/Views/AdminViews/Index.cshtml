@@ -1,0 +1,142 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Admin Views
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Admin Views List
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (TempData["msg"] != null)
+        {
+            <alert class="alert alert-success">@TempData["msg"]</alert>
+        }
+        @if (TempData["error"] != null)
+        {
+            <alert class="alert alert-danger">@TempData["error"]</alert>
+        }
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Admin Views List
+                        </h3>
+                    </div>
+                </div>
+                <div class="m-portlet__head-tools">
+                    <a href="@Url.Action("Create", "AdminViews")" class="btn btn-info">Create Views</a>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Menu Name</th>
+                                <th scope="col">Controller Name</th>
+                                <th scope="col">Action Name</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+<script type="text/javascript">
+
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "processing": true,
+                        "ajax": {
+                            "url": "@Url.Action("GetAdminViews", "AdminViews")"
+                        },
+                        "columns": [
+                            {"data": "MenuName"},
+                            {"data": "ControllerName"},
+                            {"data": "ActionName" },
+                        ],
+                        "aoColumns": [
+                            {"mData": "MenuName", sDefaultContent: ""},
+                            {"mData": "ControllerName", sDefaultContent: ""},
+                            {"mData": "ActionName", sDefaultContent: ""},
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'View Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               })
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            }
+                        ],
+                        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+
+</script>

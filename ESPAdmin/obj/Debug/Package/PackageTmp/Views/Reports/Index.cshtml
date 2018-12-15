@@ -1,0 +1,191 @@
+﻿<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Reports
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Sample
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Admin Users List
+                        </h3>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="m-portlet__body">
+                <table class="columns" style="width:100%;">
+                    <tr>
+                        <td><div id="Sample_chart_div"></div></td>
+                        <td><div id="Sample_chart_div1"></div></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><div id="Sample_chart_div2"></div></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+<script src="~/Scripts/charts.loader.js"></script>
+<script type="text/javascript">
+
+    google.charts.load('current', {'packages':['corechart', 'bar']});
+
+    $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      contentType: 'application/json',
+      url: "@Url.Action("GetSexRatio", "Reports")",
+      data: '{}',
+      success: function (response)
+      {
+         drawchart(response.sex);
+         drawchart2(response.state);
+    console.log(response.state);
+      },
+      error: function ()
+      {
+         alert("Error loading data! Please try again.");
+      }
+    });
+
+    $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      contentType: 'application/json',
+      url: "@Url.Action("GetMaritalStatusRatio", "Reports")",
+      data: '{}',
+      success: function (response)
+      {
+         drawchart1(response.data);
+      },
+      error: function ()
+      {
+         alert("Error loading data! Please try again.");
+      }
+    });
+
+    function drawchart(dataValues){
+        var data = new google.visualization.DataTable();
+
+        data.addColumn('string', 'Sex');
+        data.addColumn('number', 'Count');
+
+        for (var i = 0; i < dataValues.length; i++)
+        {
+            data.addRow([dataValues[i].Sex, dataValues[i].Count] );
+        }
+
+        var chart = new google.visualization.PieChart(document.getElementById('Sample_chart_div'));
+
+        var options = {legend: 'right',
+                        title:'Exployee Sex Chart',
+                        is3D: true,
+                        position: 'bottom',
+                        fontsize: '16px',
+                        width: 400,
+                        height: 400,
+                        chartArea: {left:'5%',top:'5%', width:'100%',height:'100%'}
+                     };
+
+        chart.draw(data, options);
+    }
+
+    function drawchart1(dataValues){
+        var data = new google.visualization.DataTable();
+
+        data.addColumn('string', 'MS');
+        data.addColumn('number', 'Count');
+
+        for (var i = 0; i < dataValues.length; i++)
+        {
+            data.addRow([dataValues[i].MS, dataValues[i].Count] );
+        }
+
+        var chart = new google.visualization.PieChart(document.getElementById('Sample_chart_div1'));
+
+        var options = {legend: 'right',
+                        title:'Marital Status Chart',
+                        is3D: true,
+                        position: 'bottom',
+                        fontsize: '16px',
+                        width: 400,
+                        height: 400,
+                        chartArea: {left:'5%',top:'5%', width:'100%',height:'100%'}
+                     };
+
+        chart.draw(data, options);
+    }
+
+    function drawchart2(dataValues){
+        var data = new google.visualization.DataTable();
+
+        data.addColumn('string', 'Mid');
+        data.addColumn('number', 'Count');
+
+        for (var i = 0; i < dataValues.length; i++)
+        {
+            data.addRow([dataValues[i].Mid, dataValues[i].Count] );
+        }
+
+        var chart = new google.visualization.ColumnChart(document.getElementById('Sample_chart_div2'));
+
+        var options = {title:'State Of Origin Chart',
+                        legend: { position: 'top', maxLines: 3 },
+                        position: 'bottom',
+                        fontsize: '16px',
+                        width: "100%",
+                        height: "700",
+                        hAxis: {
+                          title: 'Time of Day',
+                        },
+                        vAxis: {
+                          title: 'Count'
+                        }
+                     };
+
+        chart.draw(data, options);
+    }
+
+
+</script>

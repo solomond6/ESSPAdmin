@@ -1,0 +1,154 @@
+﻿
+@{
+    ViewBag.Title = "ViewStaffs";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Employer Staff List
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Employer Staff List
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Employers List
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped">
+                        <thead>
+                            <th scope="col">PIN</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Middle Names</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Phone No.</th>
+                            <th scope="col">Date of Birth</th>
+                            <th scope="col">Date of Employement</th>
+                        </thead>
+                    </table>
+                </div>
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+<script type="text/javascript">
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+
+    var EmployerID = getUrlParameter('EmployerID');
+
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "processing": true,
+                        "stateSave": true,
+                        "ajax": {
+                            "type": 'POST',
+                            "url": "@Url.Action("GetCompanyEmployee", "Employer")",
+                            "data": {EmployerID: EmployerID}
+                        },
+                        "columns": [
+                            {"data": "PIN"},
+                            {"data": "LastName" },
+                            {"data": "FirstName"},
+                            {"data": "MiddleName" },
+                            {"data": "Email" },
+                            {"data": "PhoneNo" },
+                            {"data": "DateOfBirth" },
+                            {"data": "DateOfEmployment" },
+                        ],
+                        "aoColumns": [
+                            {"mData": "PIN", sDefaultContent: ""},
+                            {"mData": "LastName", sDefaultContent: ""},
+                            {"mData": "FirstName", sDefaultContent: ""},
+                            {"mData": "MiddleName", sDefaultContent: ""},
+                            {"mData": "Email", sDefaultContent: ""},
+                            {"mData": "PhoneNo", sDefaultContent: ""},
+                            {"mData": "DateOfBirth", sDefaultContent: ""},
+                            {"mData": "DateOfEmployment", sDefaultContent: ""},
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               } )
+                           }
+                       },
+                        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+
+</script>
+
+

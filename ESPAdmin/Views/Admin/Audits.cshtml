@@ -1,0 +1,170 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/jquery-confirm.min.css" rel="stylesheet" />
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Admin
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Admin Users List
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (ViewBag.Message != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.Message
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (ViewBag.sMessage != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.sMessage
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+        
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Admin Users List
+                        </h3>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>TABLE NAME</th>
+                                <th>COLUMN NAME</th>
+                                <th>CHANGED BY</th>
+                                <th>APPROVED BY</th>
+                                <th>NOTE</th>
+                                <th>DATE CHANGED</th>
+                                <th>DATE APPROVED</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+<script type="text/javascript">
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "processing": true,
+                        "stateSave": true,
+                        "ajax": {
+                            "url": "@Url.Action("GetAudits", "Admin")"
+                        },
+                        "columns": [
+                            {"data": "ID"},
+                            {"data": "TABLE_NAME"},
+                            {"data": "COLUMN_NAME" },
+                            {"data": "CHANGED_BY"},
+                            {"data": "APPROVED_BY"},
+                            {"data": "NOTE"},
+                            {"data": "DATE_CHANGED"},
+                            {"data": "DATE_APPROVED"}
+                        ],
+                        "aoColumns": [
+                            {"mData": "ID", sDefaultContent: ""},
+                            {"mData": "TABLE_NAME", sDefaultContent: ""},
+                            {"mData": "COLUMN_NAME", sDefaultContent: ""},
+                            {"mData": "CHANGED_BY", sDefaultContent: ""},
+                            {"mData": "APPROVED_BY", sDefaultContent: ""},
+                            {"mData": "NOTE", sDefaultContent: ""},
+                            {"mData": "DATE_CHANGED", sDefaultContent: ""},
+                            {"mData": "DATE_APPROVED", sDefaultContent: ""},
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal({
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Audit Details';
+                                   }
+                               }),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                                   tableClass: 'table'
+                               })
+                           }
+                       },
+                       "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+    </script>

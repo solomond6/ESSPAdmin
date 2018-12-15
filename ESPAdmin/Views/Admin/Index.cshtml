@@ -1,0 +1,319 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Admin
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Admin Users List
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (ViewBag.Message != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.Message
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (ViewBag.sMessage != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-success alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.sMessage
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+        
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Admin Users List
+                        </h3>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th scope="col">USERNAME</th>
+                                <th scope="col">FULLNAME</th>
+                                <th scope="col">EMAIL</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">DATE LAST MODIFIED</th>
+                                <th scope="col">LOCKED</th>
+                                <th scope="col">STATUS</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="m-form m-form--fit" method="post" action="@Url.Action("EditRole", "Admin")">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <label>Role:</label>
+                        <select name="Role" class="form-control m-input" id="roles" required>
+                            <option value="">Select A Role</option>
+                        </select>
+                        <input type="hidden" name="StaffID" value="" id="StaffID" class="StaffID"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+<script type="text/javascript">
+    $(document).on('click', '#unlock', function(){
+        var type = $(this).data("type");
+        var StaffID = $(this).data("id");
+        var url = '@Url.Action("UnlockUser", "Admin")'+'?StaffID='+StaffID;
+        $('.dataTables_processing').hide();
+        $.confirm({
+            title: 'Unlock!',
+            content: 'Are you sure you want to UNLOCK '+StaffID+' ?',
+            autoClose: 'cancel|10000',
+            buttons: {
+                confirm: function(){
+                    window.location.replace(url);
+                },
+                cancel: function () {
+                    //$.alert('Canceled!');
+                },
+            }
+        });
+    });
+
+    $(document).on('click', '#activate', function(){
+        var type = $(this).data("type");
+        var StaffID = $(this).data("id");
+        var url = '@Url.Action("ActivateUser", "Admin")'+'?StaffID='+StaffID;
+        $('.dataTables_processing').hide();
+        $.confirm({
+            title: 'Unlock!',
+            content: 'Are you sure you want to Activate '+StaffID+' ?',
+            autoClose: 'cancel|10000',
+            buttons: {
+                confirm: function(){
+                    window.location.replace(url);
+                },
+                cancel: function () {
+                    //$.alert('Canceled!');
+                },
+            }
+        });
+    });
+
+    $(document).on('click', '#deactivate', function(){
+        var type = $(this).data("type");
+        var StaffID = $(this).data("id");
+        var url = '@Url.Action("DeactivateUser", "Admin")'+'?StaffID='+StaffID;
+        $('.dataTables_processing').hide();
+        $.confirm({
+            title: 'Unlock!',
+            content: 'Are you sure you want to Deactivate '+StaffID+' ?',
+            autoClose: 'cancel|10000',
+            buttons: {
+                confirm: function(){
+                    window.location.replace(url);
+                },
+                cancel: function () {
+                    //$.alert('Canceled!');
+                },
+            }
+        });
+    });
+
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "processing": true,
+                        "stateSave": true,
+                        "ajax": {
+                            "url": "@Url.Action("GetInternalUsers", "Admin")"
+                        },
+                        "columns": [
+                            {"data": "USER_NAME"},
+                            {"data": "FULLNAME" },
+                            {"data": "EMAIL" },
+                            {"data": "ROLE_ID" },
+                            {"data": "DATE_LAST_MODIFIED"},
+                            {"data": "LOCKED" },
+                            {"data": "STATUS" },
+                        ],
+                        "aoColumns": [
+                            {"mData": "USER_NAME", sDefaultContent: ""},
+                            {"mData": "FULLNAME", sDefaultContent: ""},
+                            {"mData": "EMAIL", sDefaultContent: ""},
+                            {"mData": "ROLE_ID", sDefaultContent: ""},
+                            {"mData": "DATE_LAST_MODIFIED", sDefaultContent: ""},
+                            {"mData": "LOCKED", sDefaultContent: ""},
+                            {"mData": "STATUS", sDefaultContent: ""},
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               } )
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [5],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url1 = '@Url.Action("UnlockUser", "Admin")'+ '?StaffID=' + row.USER_NAME;
+                                    if(row.LOCKED == "True"){
+                                        return '<button class="btn btn-success btn-sm" id="unlock" data-id="'+userId+'" data-type="2">False</button>';
+                                    }else{
+                                         return '<a href="'+url1+'" class="btn btn-danger btn-sm" id="unlock" data-id="'+userId+'" data-type="2">UNLOCK</a>';
+                                    }
+                              }
+                            },
+                            { targets : [6],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url3 = '@Url.Action("DeactivateUser", "Admin")'+ '?StaffID=' + row.USER_NAME;
+                                    var url4 = '@Url.Action("ActivateUser", "Admin")'+ '?StaffID=' + row.USER_NAME;
+                                    if(row.STATUS == "True"){
+                                        return '<a href="'+url3+'" class="btn btn-info btn-sm" id="activate" data-id="'+userId+'" data-type="4">Deactivate</a>';
+                                    }else{
+                                        return '<a href="'+url4+'" class="btn btn-danger btn-sm" id="deactivate" data-id="'+userId+'" data-type="3">Activate</a>';
+                                    }
+                               }
+                            },
+                            { targets : [7],
+                              mRender : function (data, type, row, meta) {
+                                   return '<button type="button" class="btn btn-warning btn-sm" id="editBtn" data-username="'+row.USER_NAME+'" data-role="'+row.ROLE_ID+'" data-name="'+row.FULLNAME+'" data-toggle="modal" data-target="#exampleModalLong">Edit</button>';
+                               }
+                            }
+                        ],
+                       "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+
+        $(document).on("click", "#editBtn", function(){
+            var username = $(this).data('username');
+            var role = $(this).data('role');
+            var name = $(this).data('name');
+            $("#exampleModalLongTitle").html(name);
+            $("#StaffID").val(username);
+        });
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetAdminRoles", "Admin")",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    jQuery.grep(item, function(role, i) {
+                         $('#roles').append($('<option>', {
+                            value: role.ID,
+                            text: role.Name
+                        }));
+                    });
+                });
+            }
+        });
+    </script>

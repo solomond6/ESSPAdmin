@@ -1,0 +1,281 @@
+﻿
+@{
+    ViewBag.Title = "Details";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Request Details
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Request Details
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (ViewBag.Message != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.Message
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Request: 
+                            @if (ViewBag.RequestId != null)
+                            {
+                                @ViewBag.RequestId;
+
+                            }
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="m-portlet__body">
+                <div class="col-md-12" style="padding:0px;">
+                    <h5>Comment</h5>
+                    <div class="col-md-7 TicketComment" id="TicketComment" style="padding:0"></div>
+                    <br/>
+                    <div class="attachedDocuments" id="attachedDocuments">
+                        <h5>Original Attachments</h5>
+                        <ul></ul>
+                    </div>
+                </div>
+                <br/>
+                <h5>Request History</h5>
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">RequestId</th>
+                                <th scope="col">Comment</th>
+                                <th scope="col">Assignee</th>
+                                <th scope="col">Assignor</th>
+                                <th scope="col">Assign Date</th>
+                                <th scope="col">Assign Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLabel"></h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="attachmentHistoryDocs" class="attachmentHistoryDocs">
+                <ul class=""></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+<script>
+    var CommentId;
+    getComment = "CommentId_"+localStorage.RequestId;
+    Comment = localStorage.getItem(getComment);
+    $("#TicketComment").html(Comment);
+    var RequestId = "@ViewBag.RequestId";
+
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "processing": true,
+                        "ajax": {
+                            "type": 'GET',
+                            "url": "@Url.Action("GetRequestsHistory", "Requests")",
+                            "data": {RequestId: RequestId}
+                        },
+                        "columns": [
+                            {"data": "RequestID"},
+                            {"data": "Comment" },
+                            {"data": "Assignee"},
+                            {"data": "Assignor" },
+                            {"data": "AssignDate" },
+                            {"data": "AssignStatus" },
+                            {}
+                        ],
+                        "aoColumns": [
+                            {"mData": "RequestID", sDefaultContent: ""},
+                            {"mData": "Comment", sDefaultContent: ""},
+                            {"mData": "Assignee", sDefaultContent: ""},
+                            {"mData": "Assignor", sDefaultContent: ""},
+                            {"mData": "AssignDate", sDefaultContent: ""},
+                            {"mData": "AssignStatus", sDefaultContent: ""},
+                            {}
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               } )
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [5],
+                              mRender : function (data, type, row, meta) {
+                                    if(row.AssignStatus == "Initiated"){
+                                        return '<button class="btn btn-danger">Initiated</button>';
+                                    }else if(row.AssignStatus == "Assigned"){
+                                        return '<button class="btn btn-warning">Assigned</button>';
+                                    }else if(row.AssignStatus == "Cancelled"){
+                                        return '<button class="btn btn-dark">Cancelled</button>';
+                                    }else if(row.AssignStatus == "Resolved"){
+                                        return '<button class="btn btn-success">Resolved</button>';
+                                    }
+                              }
+                            },
+                            { targets : [6],
+                              mRender : function (data, type, row, meta) {
+                                   return '<button type="button" class="btn btn-info" id="historyId" data-toggle="modal" data-id="'+row.HistoryID+'" data-target="#exampleModal" data-toggle="tooltip" title="View Attachment">View Attachment(s)</button>';
+                              }
+                            },
+                        ],
+                        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetRequestDocs", "Requests")'+ '?RequestId=' + RequestId,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $.grep(item, function (docs, i){
+
+                        //$('#attachmentHistoryDocs').html("");
+                        if(docs.Doc != ""){
+                            if(docs.Docext == ".jpg" || docs.Docext == ".jpeg" || docs.Docext == ".png" || docs.Docext == ".gif"){
+                                var listDocs = '<li><h5><i class="fa fa-image fa-3x"></i> <a href='+docs.Doc+' target="_blank">'+docs.Docname+'</a></li>';
+                            }else if(docs.Docext == ".pdf" || docs.Docext == ".doc" || docs.Docext == ".docx"){
+                                var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a href='+docs.Doc+' target="_blank">'+docs.Docname+'</a></li>';
+                            }else if(docs.Docext == ".csv" || docs.Docext == ".xls" || docs.Docext == ".xlsx"){
+                                var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a href='+docs.Doc+' target="_blank">'+docs.Docname+'</a></li>';
+                            }
+                        }else{
+                            var listDocs = '<li><h5>No Attachement</h5></li>';
+                        }
+                        $('#attachedDocuments ul').append(listDocs);
+                    });
+                });
+            }
+        });
+
+        $(document).on('click', '#historyId', function(){
+            var historyId = $(this).data("id");
+            $("#historyID").val(historyId)
+            $("#exampleModalLabel").html("History ID:" +historyId);
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetRequestHistoryDocs", "Requests")'+ '?historyId=' + historyId,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (index, item) {
+                        $.grep(item, function (docs, i){
+
+                            //$("#attachmentHistoryDocs ul").empty("");
+                            if(docs.Doc != ""){
+                                if(docs.Docext == ".jpg" || docs.Docext == ".jpeg" || docs.Docext == ".png" || docs.Docext == ".gif"){
+                                var listDocs = '<li><h5><i class="fa fa-image fa-3x"></i> <a href='+docs.Doc+' target="_blank">'+docs.Docname+'</a></li>';
+                                }else if(docs.Docext == ".pdf" || docs.Docext == ".doc" || docs.Docext == ".docx"){
+                                    var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a href='+docs.Doc+' target="_blank">'+docs.Docname+'</a></li>';
+                                }else if(docs.Docext == ".csv" || docs.Docext == ".xls" || docs.Docext == ".xlsx"){
+                                    var listDocs = '<li><h5><i class="fa fa-file fa-3x"></i> <a href='+docs.Doc+' target="_blank">'+docs.Docname+'</a></li>';
+                                }
+                            }else{
+                                var listDocs1 = '<li><h5>No Attachement</h5></li>';
+                            }
+                            console.log(listDocs1);
+                            $('#attachmentHistoryDocs ul').empty().append(listDocs1);
+                        });
+                    });
+                }
+            });
+        });
+//var image = new Image();
+//image.src = "data:image/jpeg;base64,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";
+//document.body.appendChild(image);
+</script>
+

@@ -1,0 +1,244 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Admin
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Employers Contact List
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="m-content">
+        @if (ViewBag.Message != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.Message
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+
+        @if (ViewBag.sMessage != null)
+        {
+            <div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-brand alert-dismissible fade show m--margin-bottom-30" role="alert">
+                <div class="m-alert__icon">
+                    <i class="flaticon-exclamation-1"></i>
+                    <span></span>
+                </div>
+                <div class="m-alert__text">
+                    @ViewBag.sMessage
+                </div>
+                <div class="m-alert__close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        }
+        
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Employer Conatcts List
+                        </h3>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="m-portlet__body">
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">FULLNAME</th>
+                                <th scope="col">PHONE Number</th>
+                                <th scope="col">EMAIL</th>
+                                <th scope="col">ROLE</th>
+                                <th scope="col">LOCKED</th>
+                                <th scope="col">STATUS</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+<script type="text/javascript">
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+
+    var EmployerID = getUrlParameter('EmployerID');
+
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "stateSave": true,
+                        "processing": true,
+                        "ajax": {
+                            "url": "@Url.Action("GetEmployerContacts", "Employers")",
+                            "data": {EmployerID: EmployerID}
+                        },
+                        "columns": [
+                            {"data": "ID"},
+                            {"data": "FULLNAME"},
+                            {"data": "PHONE" },
+                            {"data": "EMAIL" },
+                            {"data": "ROLE_ID" },
+                            {"data": "LOCKED" },
+                            {"data": "STATUS" },
+                            {}
+                        ],
+                        "aoColumns": [
+                            {"mData": "ID", sDefaultContent: ""},
+                            {"mData": "FULLNAME", sDefaultContent: ""},
+                            {"mData": "PHONE", sDefaultContent: ""},
+                            {"mData": "EMAIL", sDefaultContent: ""},
+                            {"mData": "ROLE_ID", sDefaultContent: ""},
+                            {"mData": "LOCKED", sDefaultContent: ""},
+                            {"mData": "STATUS", sDefaultContent: ""},
+                            {}
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               } )
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [5],
+                                mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url1 = '@Url.Action("UnlockUser", "Employers")'+ '?StaffID=' + row.USER_NAME;
+                                    if(row.LOCKED == "True"){
+                                        return '<button class="btn btn-success btn-sm" id="unlock" data-id="'+userId+'" data-type="2">False</button>';
+                                    }else{
+                                         return '<a href="'+url1+'" class="btn btn-danger btn-sm" id="unlock" data-id="'+userId+'" data-type="2">Click To UNLOCK</a>';
+                                    }
+                                }
+                            },
+                            { targets : [6],
+                                mRender : function (data, type, row, meta) {
+                                    var userId = row.USER_NAME;
+                                    var url3 = '@Url.Action("DeactivateUser", "Employers")'+ '?StaffID=' + row.USER_NAME;
+                                    var url4 = '@Url.Action("ActivateUser", "Employers")'+ '?StaffID=' + row.USER_NAME;
+                                    if(row.STATUS == "True"){
+                                        return '<a href="'+url3+'" class="btn btn-info btn-sm" id="activate" data-id="'+userId+'" data-type="4">Click To Deactivate</a>';
+                                    }else{
+                                        return '<a href="'+url4+'" class="btn btn-danger btn-sm" id="deactivate" data-id="'+userId+'" data-type="3">Click To Activate</a>';
+                                    }
+                                }
+                            },
+                            { targets : [7],
+                              mRender : function (data, type, row, meta) {
+                                    var userId = row.ID;
+                                    var url = '@Url.Action("EditEmployerContact", "Employers")';
+                                    return '<a href="'+url+'" class="btn btn-dark btn-sm" id="edit" data-id="'+userId+'" data-type="3">Edit Contact</a>';
+
+                               }
+                            }
+                        ],
+                       "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+        $(".m-portlet__head-text").html(localStorage.EmployerName +' Contact List')
+
+        $(document).on('click', '#edit', function(){
+
+            var ID = $(this).closest('tr').find('td:nth-child(1)').text();
+            var FULLNAME = $(this).closest('tr').find('td:nth-child(2)').text();
+            var PHONE = $(this).closest('tr').find('td:nth-child(3)').text();
+            var EMAIL = $(this).closest('tr').find('td:nth-child(4)').text();
+            var ROLE_ID = $(this).closest('tr').find('td:nth-child(5)').text();
+
+            localStorage.setItem("ID", ID)
+            localStorage.setItem("FULLNAME", FULLNAME)
+            localStorage.setItem("PHONE", PHONE)
+            localStorage.setItem("EMAIL", EMAIL)
+            localStorage.setItem("ROLE_ID", ROLE_ID)
+        });
+    </script>

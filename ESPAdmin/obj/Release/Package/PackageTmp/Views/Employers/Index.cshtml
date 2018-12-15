@@ -1,0 +1,211 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="m-grid__item m-grid__item--fluid m-wrapper">
+    <div class="m-subheader ">
+        <div class="d-flex align-items-center">
+            <div class="mr-auto">
+                <h3 class="m-subheader__title ">
+                    Employers
+                </h3>
+                <ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+                    <li class="m-nav__item m-nav__item--home">
+                        <a href="#" class="m-nav__link m-nav__link--icon">
+                            <i class="m-nav__link-icon la la-home"></i>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Actions
+                            </span>
+                        </a>
+                    </li>
+                    <li class="m-nav__separator">
+                        -
+                    </li>
+                    <li class="m-nav__item">
+                        <a href="" class="m-nav__link">
+                            <span class="m-nav__link-text">
+                                Employer List
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <span class="m-subheader__daterange" id="m_dashboard_daterangepicker">
+                <span class="m-subheader__daterange-label">
+                    <span class="m-subheader__daterange-title">Today:</span>
+                    <span class="m-subheader__daterange-date m--font-brand">@DateTime.Now.ToString("MMM dd")</span>
+                </span>
+                <a href="#" class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+                    <i class="la la-angle-down"></i>
+                </a>
+            </span>
+        </div>
+    </div>
+    <div class="m-content">
+        
+        <div class="m-portlet m-portlet--mobile">
+            <div class="m-portlet__head">
+                <div class="m-portlet__head-caption">
+                    <div class="m-portlet__head-title">
+                        <h3 class="m-portlet__head-text">
+                            Employers List
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="m-portlet__body">
+                @if (TempData["error"] != null)
+                {
+                    <alert class="alert alert-danger">@TempData["error"]</alert>
+                }
+                @if (TempData["Msg"] != null)
+                {
+                    <alert class="alert alert-success">@TempData["Msg"]</alert>
+                }
+                <!--begin: Datatable -->
+                <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded">
+                    <table id="employer-data-table" class="datatable__table table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">EmployerId</th>
+                                <th scope="col">Company Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">RM Nme</th>
+                                <th scope="col">Address 1</th>
+                                <th scope="col">Address 2</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!--end: Datatable -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+<script type="text/javascript">
+
+    var menuItems;
+    var theIndex = -1;
+    $.ajax({
+      type: "GET",
+      url: "@Url.Action("GetMenuItems", "Login")",
+      datatype: "json",
+      async: false,
+      success: function(data){
+        menuItems = data.data;
+        for (var i = 0; i < menuItems.length; i++) {
+	        if (menuItems[i].ActionName == 'CreateEmployerContact' && menuItems[i].ControllerName == 'Employers') {
+		        theIndex = i;
+		        break;
+	        }
+        }
+      }
+    });
+
+    console.log(theIndex);
+
+    var assetListVM;
+        $(function () {
+            assetListVM = {
+                dt: null,
+                init: function () {
+                    dt = $('#employer-data-table').DataTable({
+                        "serverSide": true,
+                        "language": {
+                             "processing": "<img src='../img/spinner.gif'>"
+                        },
+                        "processing": true,
+                        "ajax": {
+                            "url": "@Url.Action("GetEmployers", "Employers")"
+                        },
+                        "columns": [
+                            {"data": "EmployerID"},
+                            {"data": "CompanyName"},
+                            {"data": "Email" },
+                            {"data": "RMName" },
+                            {"data": "Address1" },
+                            {"data": "Address1" },
+                            {}
+                        ],
+                        "aoColumns": [
+                            {"mData": "EmployerID", sDefaultContent: ""},
+                            {"mData": "CompanyName", sDefaultContent: ""},
+                            {"mData": "Email", sDefaultContent: ""},
+                            {"mData": "RMName", sDefaultContent: ""},
+                            {"mData": "Address1", sDefaultContent: ""},
+                            {"mData": "Address1", sDefaultContent: ""},
+                            {}
+                        ],
+                        responsive: {
+                           details: {
+                               display: $.fn.dataTable.Responsive.display.modal( {
+                                   header: function ( row ) {
+                                       var data = row.data();
+                                       return 'Employer Details';
+                                   }
+                               } ),
+                               renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+                                   tableClass: 'table'
+                               })
+                           }
+                       },
+                       columnDefs: [
+                            {
+                               "searchable": false,
+                               "orderable": false,
+                               "targets": -1
+                            },{
+                               "data": null,
+                               "defaultContent": "",
+                               "targets": -1
+                            },
+                            { targets : [6],
+                              mRender : function (data, type, row, meta) {
+                                    var url = '@Url.Action("ViewStaffs", "Employers")' + '?EmployerID=' + row.EmployerID;
+                                    var url2 = '@Url.Action("CreateEmployerContact", "Employers")' + '?EmployerID=' + row.EmployerID;
+                                    var url3 = '@Url.Action("ViewContacts", "Employers")' + '?EmployerID=' + row.EmployerID;
+                                    if(theIndex != "-1"){
+                                        var createContact = '<a href="'+url2+'" class="btn btn-warning btn-sm companyBtn" data-name="'+row.CompanyName+'" data-id="'+row.EmployerID+'">Create Contact</a>';
+                                    }else{
+                                        var createContact = '';
+                                    }
+                                    return '<a href="'+url2+'" class="btn btn-warning btn-sm companyBtn" data-name="'+row.CompanyName+'" data-id="'+row.EmployerID+'">Create Contact</a> <a href="'+url3+'" class="btn btn-dark btn-sm companyBtn2" data-name="'+row.CompanyName+'" data-id="'+row.EmployerID+'">View Contacts</a><a href="'+url+'" class="btn btn-info btn-sm companyBtn" data-name="'+row.CompanyName+'">View Staff</a> '+ createContact
+                              }
+                            }
+                        ],
+                        "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                    });
+                }
+            }
+            // initialize the datatables
+            assetListVM.init();
+        });
+
+        $(document).on("click", ".companyBtn", function(){
+            var EmployerName = $(this).data("name");
+            localStorage.setItem("EmployerName", EmployerName)
+            var EmployerID = $(this).data("id");
+            localStorage.setItem("EmployerID", EmployerID)
+        });
+
+        $(document).on("click", ".companyBtn2", function(){
+            var EmployerName = $(this).data("name");
+            localStorage.setItem("EmployerName", EmployerName)
+            var EmployerID = $(this).data("id");
+            localStorage.setItem("EmployerID", EmployerID)
+        });
+
+    </script>
